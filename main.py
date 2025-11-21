@@ -1,16 +1,16 @@
 import asyncio
-import datetime
 import logging
 
 from aiogram import Dispatcher
+from yookassa import Configuration
 
-import handlers_admin
-import handlers_user
+from handlers import handlers_admin, handlers_user, handlers_yookassa
 from bot import bot
+from config import SHOP_ID, SECRET_KEY
 from db.models import create_tables
 from typing import NoReturn
-import handlers_user
 
+from tasks import start_background_tasks
 
 logger: logging.Logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -41,11 +41,14 @@ async def main() -> None:
         Ловит и логирует все исключения во время работы
     """
     try:
+        Configuration.account_id = SHOP_ID
+        Configuration.secret_key = SECRET_KEY
         # Инициализация таблиц в базе данных
         await create_tables()
         await bot.send_message(1012882762, 'Бот запущен!!!')
         # Настройка базового логирования
         logger.info("Инициализация таблиц базы данных завершена")
+        await start_background_tasks()
 
         # Создание диспетчера для обработки событий
         dp: Dispatcher = Dispatcher()
@@ -53,6 +56,7 @@ async def main() -> None:
         # Регистрация роутеров
         dp.include_router(handlers_admin.router)
         dp.include_router(handlers_user.router)
+        dp.include_router(handlers_yookassa.router)
         logger.info("Роутеры успешно зарегистрированы")
 
         # Удаление вебхука для очистки ожидающих обновлений

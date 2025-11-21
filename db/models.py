@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, BigInteger, ForeignKey, Text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, relationship
 from datetime import datetime
 
 # Настройка асинхронного подключения к SQLite3
@@ -34,6 +34,22 @@ class Product(Base):
     photo_file_id = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.now)
     is_active = Column(Boolean, default=True)
+
+
+class PaymentModel(Base):
+    __tablename__ = "payments"
+
+    id = Column(String(255), primary_key=True)  # payment_id от YooKassa
+    status = Column(String(20), nullable=False, default="pending")  # pending, canceled, succeeded
+    user_id = Column(BigInteger, ForeignKey("users.user_id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    amount = Column(Integer, nullable=False)  # сумма в копейках
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    # Связи
+    user = relationship("User")
+    product = relationship("Product")
 
 
 async def create_tables():

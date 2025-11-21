@@ -7,6 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot import bot
 from db.models import Session, User, Product
+from keyboard import create_kb
 
 logger = logging.getLogger(__name__)
 router = Router()
@@ -160,4 +161,32 @@ async def prev_product(callback: CallbackQuery):
 
 @router.callback_query(F.data.startswith("buy_"))
 async def buy_product(callback: CallbackQuery):
-    await callback.answer("🛠️ Раздел находится в разработке! Скоро будет доступно! 💫", show_alert=True)
+    product_id = callback.data.split('_')[1]
+
+    # Создаем клавиатуру с выбором способа оплаты
+    payment_keyboard = create_kb(
+        1,
+        **{
+            f"yookassa_{product_id}": "💳 YooKassa",
+            f"stars_{product_id}": "⭐ Telegram Stars",
+            f"cryptobot_{product_id}": "₿ Cryptobot",
+            f"view_products": "◀️ Назад"
+        }
+    )
+
+    await callback.message.answer(
+        "Выберите способ оплаты 💫",
+        reply_markup=payment_keyboard
+    )
+
+
+@router.callback_query(F.data.startswith("stars_"))
+async def process_stars(callback: CallbackQuery):
+    product_id = callback.data.split('_')[1]
+    await callback.answer("Оплата через Telegram Stars временно недоступна", show_alert=True)
+
+
+@router.callback_query(F.data.startswith("cryptobot_"))
+async def process_cryptobot(callback: CallbackQuery):
+    product_id = callback.data.split('_')[1]
+    await callback.answer("Оплата через Cryptobot временно недоступна", show_alert=True)
