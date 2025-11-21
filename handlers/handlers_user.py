@@ -180,12 +180,6 @@ async def buy_product(callback: CallbackQuery):
     )
 
 
-@router.callback_query(F.data.startswith("stars_"))
-async def process_stars(callback: CallbackQuery):
-    product_id = callback.data.split('_')[1]
-    await callback.answer("Оплата через Telegram Stars временно недоступна", show_alert=True)
-
-
 @router.callback_query(F.data.startswith("cryptobot_"))
 async def process_cryptobot(callback: CallbackQuery):
     product_id = callback.data.split('_')[1]

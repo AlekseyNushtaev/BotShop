@@ -52,6 +52,23 @@ class PaymentModel(Base):
     product = relationship("Product")
 
 
+class StarsModel(Base):
+    __tablename__ = "stars_payments"
+
+    id = Column(String(255), primary_key=True)  # invoice_payload от Telegram
+    status = Column(String(20), nullable=False, default="pending")  # pending, canceled, succeeded
+    user_id = Column(BigInteger, ForeignKey("users.user_id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    amount = Column(Integer, nullable=False)  # сумма в звездах
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    # Связи
+    user = relationship("User")
+    product = relationship("Product")
+
+
+
 async def create_tables():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

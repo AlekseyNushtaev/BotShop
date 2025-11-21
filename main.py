@@ -4,7 +4,7 @@ import logging
 from aiogram import Dispatcher
 from yookassa import Configuration
 
-from handlers import handlers_admin, handlers_user, handlers_yookassa
+from handlers import handlers_admin, handlers_user, handlers_yookassa, handlers_stars
 from bot import bot
 from config import SHOP_ID, SECRET_KEY
 from db.models import create_tables
@@ -57,6 +57,7 @@ async def main() -> None:
         dp.include_router(handlers_admin.router)
         dp.include_router(handlers_user.router)
         dp.include_router(handlers_yookassa.router)
+        dp.include_router(handlers_stars.router)
         logger.info("Роутеры успешно зарегистрированы")
 
         # Удаление вебхука для очистки ожидающих обновлений

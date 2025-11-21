@@ -1,4 +1,3 @@
-# handlers_yookassa.py - полная версия файла
 import logging
 import uuid
 
