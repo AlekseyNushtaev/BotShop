@@ -34,7 +34,7 @@ async def process_yookassa(callback: CallbackQuery):
 
         yookassa_payment = Payment.create({
             "amount": {
-                "value": f"{product.price / 10000:.2f}",
+                "value": f"{product.price / 100:.2f}",
                 "currency": "RUB"
             },
             "confirmation": {
