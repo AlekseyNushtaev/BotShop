@@ -68,6 +68,22 @@ class StarsModel(Base):
     product = relationship("Product")
 
 
+class CryptoModel(Base):
+    __tablename__ = "crypto_payments"
+
+    id = Column(BigInteger, primary_key=True)
+    status = Column(String(20), nullable=True, default="pending")
+    user_id = Column(BigInteger, ForeignKey("users.user_id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    amount = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    # Связи
+    user = relationship("User")
+    product = relationship("Product")
+
+
 
 async def create_tables():
     async with engine.begin() as conn:

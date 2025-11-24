@@ -178,9 +178,3 @@ async def buy_product(callback: CallbackQuery):
         "Выберите способ оплаты 💫",
         reply_markup=payment_keyboard
     )
-
-
-@router.callback_query(F.data.startswith("cryptobot_"))
-async def process_cryptobot(callback: CallbackQuery):
-    product_id = callback.data.split('_')[1]
-    await callback.answer("Оплата через Cryptobot временно недоступна", show_alert=True)
